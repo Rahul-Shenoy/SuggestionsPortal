@@ -44,6 +44,7 @@
 .suggestion-box .container { 
   position: relative;
   display: inline-block;
+  width: 300px;
 }
 
 .suggestion-box .input-box {
@@ -79,5 +80,17 @@
 }
 
 .suggestion-box .query-box {
-  width: 310px;
+  width: 110px;
+}
+
+.suggestion-box .chosen-item {
+  margin-right: 5px;
+  font-size: 12px;
+  font-family: calibri;
+}
+
+.suggestion-box .chosen-item .chosen-item-delete {
+  margin: 3px;
+  color: red;
+  cursor: pointer;
 }

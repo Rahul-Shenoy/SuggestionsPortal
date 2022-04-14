@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import '../App.css';
 import { debounce } from '../utils/utils'
 import SelectedItem from './DefaultSelectedItem';
@@ -14,6 +14,7 @@ const SuggestionBox = ({
   const [inputQuery, setInputQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selections, setSelections] = useState([]);
+  const inputRef = useRef(null);
 
   const reloadSuggestions = (query) => {
     const results = queryFunc(query)
@@ -27,15 +28,17 @@ const SuggestionBox = ({
     memoedUpdate(inputVal);
   }
 
-  const insertSelection = (id, value) => 
+  const optionSelected = (id, value) => 
   {
     setSelections([...selections, {id, value}])
     setSuggestions([]);
-    setInputQuery("")
+    multiSelect ? setInputQuery("") : setInputQuery(value)
+    inputRef.current.focus();
   }
 
   const removeSelection = (id) => {
     setSelections(selections.filter(selection => selection.id !== id))
+    inputRef.current.focus();
   }
 
   const getKey = (item) => item[keyAttr] !== undefined ? item[keyAttr] : item;
@@ -46,22 +49,22 @@ const SuggestionBox = ({
     <div className="suggestion-box">
       <div className='container'>
         <div className='input-box'>
-          <input value={inputQuery} className='query-box' type="text" 
+          {multiSelect && selections
+          .map(s => <SelectedItem key={s["id"]} id={s["id"]} value={s["value"]} removeSelection={removeSelection}/>)}
+          <input value={inputQuery} className='query-box' type="text" ref={inputRef}
           onChange={(e) => handleChange(e.target.value)} />
         </div>
       </div>
       {suggestions && suggestions.length > 0 && 
         <div className='suggestions'>
         {
-          suggestions.filter(suggestion => !selections.find((x) => x["id"] === getKey(suggestion))).map(suggestion => 
-            <SuggestionComponent key={getKey(suggestion)} id={getKey(suggestion)} value={getValue(suggestion)} insertSelection={insertSelection}/>
+          suggestions.filter(suggestion => !selections.find((x) => x["id"] === getKey(suggestion)))
+          .map(suggestion => 
+            <SuggestionComponent key={getKey(suggestion)} id={getKey(suggestion)} value={getValue(suggestion)} insertSelection={optionSelected}/>
           )
         }
         </div>
       }
-      <div>
-        {selections.map(s => <SelectedItem key={s["id"]} id={s["id"]} value={s["value"]} removeSelection={removeSelection}/>)}
-      </div>
     </div>
   );
 }
