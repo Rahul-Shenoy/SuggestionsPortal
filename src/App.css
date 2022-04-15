@@ -70,13 +70,16 @@
 
 .suggestion-box .suggestions {
   max-height: 300px;
-  width: 300px;
-  overflow-y: scroll;
+  width: 288px;
+  overflow-y: auto;
   background: rgb(238, 238, 238);
   margin: 0px;
   padding: 0px 0px 0px 10px;
   list-style-type: none;
   position: absolute;
+  border: solid 1px #ccc;
+  box-shadow: 2px 2px 6px #999 inset;
+  border-radius: 0px 0px 3px 3px;
 }
 
 .suggestion-box .query-box {

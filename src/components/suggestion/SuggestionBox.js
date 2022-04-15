@@ -1,45 +1,53 @@
-import React, { useState, useCallback, useRef } from 'react';
-import '../App.css';
-import { debounce } from '../utils/utils'
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import '../../App.css';
+import { debounce } from '../../utils/utils'
 import SelectedItem from './DefaultSelectedItem';
 import DefaultSuggestionComponent from './DefaultSuggestion'
 
 const SuggestionBox = ({
-  keyAttr, 
-  valueAttr, 
+  keyAttr,
+  valueAttr,
   queryFunc,
-  multiSelect, 
+  multiSelect,
+  onChange,
   SuggestionComponent=DefaultSuggestionComponent
 }) => {
   const [inputQuery, setInputQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [selections, setSelections] = useState([]);
   const inputRef = useRef(null);
-
+``
   const reloadSuggestions = (query) => {
-    const results = queryFunc(query)
-    setSuggestions(results);
+    queryFunc(query).then(results => {
+      console.log(results)
+      setSuggestions(results)
+    });
   };
 
   const memoedUpdate = useCallback(debounce(reloadSuggestions), [])
+
+  useEffect(() => {
+    focusInput();
+    multiSelect ? onChange(selections) : onChange(selections[0]);
+  }, [selections]);
 
   const handleChange = (inputVal) => {
     setInputQuery(inputVal);
     memoedUpdate(inputVal);
   }
 
-  const optionSelected = (id, value) => 
+  const optionSelected = (obj) => 
   {
-    setSelections([...selections, {id, value}])
+    setSelections([...selections, obj])
     setSuggestions([]);
-    multiSelect ? setInputQuery("") : setInputQuery(value)
-    inputRef.current.focus();
+    multiSelect ? setInputQuery("") : setInputQuery(getValue(obj))
   }
 
   const removeSelection = (id) => {
-    setSelections(selections.filter(selection => selection.id !== id))
-    inputRef.current.focus();
+    setSelections(selections.filter(selection => getKey(selection) !== id))
   }
+
+  const focusInput = () => inputRef.current.focus();
 
   const getKey = (item) => item[keyAttr] !== undefined ? item[keyAttr] : item;
 
@@ -48,9 +56,12 @@ const SuggestionBox = ({
   return (
     <div className="suggestion-box">
       <div className='container'>
-        <div className='input-box'>
+        <div className='input-box' onClick={() => focusInput()}>
           {multiSelect && selections
-          .map(s => <SelectedItem key={s["id"]} id={s["id"]} value={s["value"]} removeSelection={removeSelection}/>)}
+          .map(s => {
+            console.log(s)
+            return <SelectedItem key={getKey(s)} id={getKey(s)} text={getValue(s)} removeSelection={removeSelection}/>})
+          }
           <input value={inputQuery} className='query-box' type="text" ref={inputRef}
           onChange={(e) => handleChange(e.target.value)} />
         </div>
@@ -58,9 +69,9 @@ const SuggestionBox = ({
       {suggestions && suggestions.length > 0 && 
         <div className='suggestions'>
         {
-          suggestions.filter(suggestion => !selections.find((x) => x["id"] === getKey(suggestion)))
+          suggestions.filter(suggestion => !selections.find((x) => getKey(x) === getKey(suggestion)))
           .map(suggestion => 
-            <SuggestionComponent key={getKey(suggestion)} id={getKey(suggestion)} value={getValue(suggestion)} insertSelection={optionSelected}/>
+            <SuggestionComponent key={getKey(suggestion)} id={getKey(suggestion)} text={getValue(suggestion)} obj={suggestion} insertSelection={optionSelected}/>
           )
         }
         </div>

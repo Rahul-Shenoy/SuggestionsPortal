@@ -1,5 +1,5 @@
 const countries = [
-    {"name":"Afghanistan","code":"AF"},
+    {"name":"Afghanistan","code":"AF", "capital": "Kabul"},
     {"name":"Aland Islands","code":"AX"},
     {"name":"Albania","code":"AL"},
     {"name":"Algeria","code":"DZ"},
@@ -104,13 +104,13 @@ const countries = [
     {"name":"India","code":"IN"},
     {"name":"Indonesia","code":"ID"},
     {"name":"Iran, Islamic Republic of","code":"IR"},
-    {"name":"Iraq","code":"IQ"},
+    {"name":"Iraq","code":"IQ", "capital": "Bagdhad"},
     {"name":"Ireland","code":"IE"},
     {"name":"Isle of Man","code":"IM"},
     {"name":"Israel","code":"IL"},
     {"name":"Italy","code":"IT"},
     {"name":"Jamaica","code":"JM"},
-    {"name":"Japan","code":"JP"},
+    {"name":"Japan","code":"JP", "capital": "Tokyo"},
     {"name":"Jersey","code":"JE"},
     {"name":"Jordan","code":"JO"},
     {"name":"Kazakhstan","code":"KZ"},
@@ -167,7 +167,7 @@ const countries = [
     {"name":"Norfolk Island","code":"NF"},
     {"name":"Northern Mariana Islands","code":"MP"},
     {"name":"Norway","code":"NO"},
-    {"name":"Oman","code":"OM"},
+    {"name":"Oman","code":"OM", "capital": "Muskat"},
     {"name":"Pakistan","code":"PK"},
     {"name":"Palau","code":"PW"},
     {"name":"Palestinian Territory, Occupied","code":"PS"},
@@ -254,10 +254,11 @@ const countries = [
 ];
  
 export function Query(query) {
-    // debugger;
-    console.log(query)
     if(query.length) {
-        return countries.filter(c => c["name"].toLowerCase().substring(0, query.length) === query.toLowerCase()) 
+        const results = countries.filter(c => c["name"].toLowerCase().substring(0, query.length) === query.toLowerCase());
+        return new Promise((resolve, reject) => {
+            resolve(results);
+        })
     }
     return [];
 }
