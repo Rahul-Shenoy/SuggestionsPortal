@@ -1,42 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .suggestion-box {
   margin: 10px;
 }
@@ -86,6 +47,10 @@
   width: 110px;
 }
 
+.suggestion-box .query-box.single {
+  width: 100%;
+}
+
 .suggestion-box .chosen-item {
   margin-right: 5px;
   font-size: 12px;
@@ -96,4 +61,46 @@
   margin: 3px;
   color: red;
   cursor: pointer;
+}
+
+.suggestion-box .suggestions-container {
+  display: none;
+  margin: 0.25rem 0.5rem;
+  margin-top: -1px;
+  width: 426px;
+  position: absolute;
+  left: 0;
+  border: 1px solid grey;
+  border-top: none;
+  max-height: 20rem;
+  overflow-y: auto;
+  font-family: calibri;
+  font-size: 13px;
+  background: #fff;
+}
+
+.suggestion-box .suggestions-container.open {
+  display: block;
+}
+
+.loader {
+  margin: 10px;
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #474a4b;
+  width: 30px;
+  height: 30px;
+  animation: spin 2s linear infinite;
+  margin-left: 40%;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import '../../App.css';
-import { debounce } from '../../utils/utils'
-import SelectedItem from './DefaultSelectedItem';
+import { debounce } from '../../utils'
+import DefaultSelectedItem from './DefaultSelectedItem';
 import DefaultSuggestionComponent from './DefaultSuggestion'
 
 const SuggestionBox = ({
@@ -9,17 +9,21 @@ const SuggestionBox = ({
   valueAttr,
   queryFunc,
   multiSelect,
+  minChars=3,
   onChange,
-  SuggestionComponent=DefaultSuggestionComponent
+  width,
+  SuggestionComponent=DefaultSuggestionComponent,
+  SelectedItem=DefaultSelectedItem
 }) => {
   const [inputQuery, setInputQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [isLoading, setLoading] = useState(false);
   const [selections, setSelections] = useState([]);
   const inputRef = useRef(null);
-``
   const reloadSuggestions = (query) => {
-    queryFunc(query).then(results => {
-      console.log(results)
+    const q = queryFunc(query)
+    q.then(results => {
+      setLoading(false)
       setSuggestions(results)
     });
   };
@@ -33,7 +37,10 @@ const SuggestionBox = ({
 
   const handleChange = (inputVal) => {
     setInputQuery(inputVal);
-    memoedUpdate(inputVal);
+    if(inputVal.length >= minChars) {
+      setLoading(true)
+      memoedUpdate(inputVal);
+    }
   }
 
   const optionSelected = (obj) => 
@@ -54,18 +61,20 @@ const SuggestionBox = ({
   const getValue = (item) => item[valueAttr] !== undefined ? item[valueAttr] : item;
 
   return (
-    <div className="suggestion-box">
+    <div className="suggestion-box" style={{width}}>
       <div className='container'>
         <div className='input-box' onClick={() => focusInput()}>
           {multiSelect && selections
-          .map(s => {
-            console.log(s)
-            return <SelectedItem key={getKey(s)} id={getKey(s)} text={getValue(s)} removeSelection={removeSelection}/>})
+          .map(s => 
+            <SelectedItem key={getKey(s)} id={getKey(s)} text={getValue(s)} removeSelection={removeSelection}/>)
           }
-          <input value={inputQuery} className='query-box' type="text" ref={inputRef}
+          <input value={inputQuery} className={multiSelect ? 'query-box' : 'query-box single'} type="text" ref={inputRef}
           onChange={(e) => handleChange(e.target.value)} />
         </div>
       </div>
+      {isLoading && <div className='suggestions'>
+        <div className='loader'></div>
+      </div>}
       {suggestions && suggestions.length > 0 && 
         <div className='suggestions'>
         {
