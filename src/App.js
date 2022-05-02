@@ -8,7 +8,7 @@ function App() {
   return <div>
     {/* <SuggestionBox queryFunc={Query} multiSelect={true} onChange={(x) => console.log(x)}/> */}
    {/* <SuggestionBox queryFunc={CountryQuery} keyAttr={"code"} multiSelect={true}  valueAttr={"name"} onChange={(x) => console.log(x)}/> */}
-   <SuggestionBox queryFunc={UserQuery} multiSelect={true} onChange={(x) => console.log(x)}
+   <SuggestionBox queryFunc={UserQuery} multiSelect={false} onChange={(x) => console.log(x)}
   valueAttr={"displayName"} keyAttr={"mail"}/> 
   </div>
 }
